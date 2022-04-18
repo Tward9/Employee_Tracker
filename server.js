@@ -23,7 +23,7 @@ const db = mysql.createConnection(
         user: 'root',
         // TODO: Add MySQL password
         password: 'rootPassword',
-        database: ''
+        database: 'company_db'
     },
     console.log(`Connected to the ___ database.`)
 );
@@ -40,18 +40,24 @@ const questions = [
 function manageBuisness(){
     inquirer.prompt(questions).then((answers) => {
         if (answers.doWhat === 'View all Departments') {
-            //something
-
+            //query to see table of departments
+            db.query('SELECT * FROM department', function (err, results) {
+                console.table(results);
+              });
             //then
             manageBuisness();
         }else if (answers.doWhat === 'View all Roles') {
-            //something
-            
+            //query to see table of roles
+            db.query('SELECT * FROM role', function (err, results) {
+                console.table(results);
+              });
             //then
             manageBuisness();
         }else if (answers.doWhat === 'View all Employees') {
-            //something
-
+            //query to see table of employees
+            db.query('SELECT * FROM employee', function (err, results) {
+                console.table(results);
+              });
             //then
             manageBuisness();
         }else if (answers.doWhat === 'Add a Department') {
@@ -79,3 +85,4 @@ function manageBuisness(){
         };
     });
 };
+manageBuisness();
