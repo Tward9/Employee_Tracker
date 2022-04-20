@@ -100,6 +100,22 @@ const questions = [
             return answers.doWhat === 'Add an Employee'
         },
     },
+    {
+        type: 'input',
+        name: 'updateEmployee',
+        message: 'What is the ID of the Employee being updated',
+        when(answers) {
+            return answers.doWhat === 'Update an Employee Role'
+        },
+    },
+    {
+        type: 'input',
+        name: 'updateEmployeeRole',
+        message: 'What is the ID of the new role of the Employee',
+        when(answers) {
+            return answers.doWhat === 'Update an Employee Role'
+        },
+    },
 ];
 
 function manageBuisness() {
@@ -166,7 +182,14 @@ function manageBuisness() {
             manageBuisness();
         } else if (answers.doWhat === 'Update an Employee Role') {
             //something
-
+            db.query(`UPDATE employee SET role_id = '${answers.updateEmployeeRole}' WHERE id = '${answers.updateEmployee}'`, function (err, results) {
+                console.log('');
+                console.log(`Employee ID: ${answers.updateEmployee} has been updated to Role ID: ${answers.updateEmployeeRole}`);
+            });
+            db.query('SELECT * FROM employee', function (err, results) {
+                console.log('');
+                console.table(results);
+            });
             //then
             manageBuisness();
         }
