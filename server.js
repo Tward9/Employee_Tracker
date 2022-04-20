@@ -220,7 +220,8 @@ function manageBuisness() {
             });
             //then
             manageBuisness();
-        }else {
+        }//add delete options, need query(DESTROY) i think
+        else {
             //Stop program
             console.log('Edit Complete');
             process.exit(1);
