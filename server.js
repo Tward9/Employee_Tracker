@@ -130,7 +130,7 @@ function manageBuisness() {
             manageBuisness();
         } else if (answers.doWhat === 'View all Roles') {
             //query to see table of roles
-            db.query('SELECT * FROM role', function (err, results) {
+            db.query('SELECT role.id, role.title, role.salary, department.department_name FROM role JOIN department ON department.id = role.department_id', function (err, results) {
                 console.log('');
                 console.table(results);
             });
@@ -138,7 +138,7 @@ function manageBuisness() {
             manageBuisness();
         } else if (answers.doWhat === 'View all Employees') {
             //query to see table of employees
-            db.query('SELECT * FROM employee', function (err, results) {
+            db.query('SELECT employee.Id, employee.first_name, employee.last_name, role.title, manager.first_name AS manager_first_name, manager.last_name AS manager_last_name FROM employee employee LEFT OUTER JOIN employee manager ON employee.manager_id = manager.id JOIN role ON role.id = employee.role_id', function (err, results) {
                 console.log('');
                 console.table(results);
             });
@@ -162,7 +162,7 @@ function manageBuisness() {
                 console.log('');
                 console.log('Adding New Department');
             });
-            db.query('SELECT * FROM role', function (err, results) {
+            db.query('SELECT role.id, role.title, role.salary, department.department_name FROM role JOIN department ON department.id = role.department_id', function (err, results) {
                 console.log('');
                 console.table(results);
             });
@@ -174,7 +174,7 @@ function manageBuisness() {
                 console.log('');
                 console.log('Adding New Department');
             });
-            db.query('SELECT * FROM employee', function (err, results) {
+            db.query('SELECT employee.Id, employee.first_name, employee.last_name, role.title, manager.first_name AS manager_first_name, manager.last_name AS manager_last_name FROM employee employee LEFT OUTER JOIN employee manager ON employee.manager_id = manager.id JOIN role ON role.id = employee.role_id', function (err, results) {
                 console.log('');
                 console.table(results);
             });
@@ -186,7 +186,7 @@ function manageBuisness() {
                 console.log('');
                 console.log(`Employee ID: ${answers.updateEmployee} has been updated to Role ID: ${answers.updateEmployeeRole}`);
             });
-            db.query('SELECT * FROM employee', function (err, results) {
+            db.query('SELECT employee.Id, employee.first_name, employee.last_name, role.title, manager.first_name AS manager_first_name, manager.last_name AS manager_last_name FROM employee employee LEFT OUTER JOIN employee manager ON employee.manager_id = manager.id JOIN role ON role.id = employee.role_id', function (err, results) {
                 console.log('');
                 console.table(results);
             });
