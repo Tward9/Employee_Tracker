@@ -33,7 +33,7 @@ const questions = [
         type: 'list',
         name: 'doWhat',
         message: 'What would you like to do?',
-        choices: ['View all Departments', 'View all Roles', 'View all Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role', 'Finish'],
+        choices: ['View all Departments', 'View all Roles', 'View all Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role', 'Update an Employee Manager', 'Finish'],
     },
     {
         type: 'input',
@@ -116,6 +116,22 @@ const questions = [
             return answers.doWhat === 'Update an Employee Role'
         },
     },
+    {
+        type: 'input',
+        name: 'updateManagerofEmployeeID',
+        message: 'What is the ID of the Employee being updated',
+        when(answers) {
+            return answers.doWhat === 'Update an Employee Manager'
+        },
+    },
+    {
+        type: 'input',
+        name: 'updateEmployeeManager',
+        message: 'What is the ID of the new manager of the Employee',
+        when(answers) {
+            return answers.doWhat === 'Update an Employee Manager'
+        },
+    },
 ];
 
 function manageBuisness() {
@@ -182,7 +198,19 @@ function manageBuisness() {
             manageBuisness();
         } else if (answers.doWhat === 'Update an Employee Role') {
             //something
-            db.query(`UPDATE employee SET role_id = '${answers.updateEmployeeRole}' WHERE id = '${answers.updateEmployee}'`, function (err, results) {
+            db.query(`UPDATE employee SET role_id = '${answers.updateEmployeeManager}' WHERE id = '${answers.updateManagerofEmployeeID}'`, function (err, results) {
+                console.log('');
+                console.log(`Employee ID: ${answers.updateManagerofEmployeeID} has been updated with new Manager ID: ${answers.updateEmployeeManager}`);
+            });
+            db.query('SELECT employee.Id, employee.first_name, employee.last_name, role.title, manager.first_name AS manager_first_name, manager.last_name AS manager_last_name FROM employee employee LEFT OUTER JOIN employee manager ON employee.manager_id = manager.id JOIN role ON role.id = employee.role_id', function (err, results) {
+                console.log('');
+                console.table(results);
+            });
+            //then
+            manageBuisness();
+        }else if (answers.doWhat === 'Update an Employee Manager') {
+            //something
+            db.query(`UPDATE employee SET manager_id = '${answers.updateEmployeeRole}' WHERE id = '${answers.updateEmployee}'`, function (err, results) {
                 console.log('');
                 console.log(`Employee ID: ${answers.updateEmployee} has been updated to Role ID: ${answers.updateEmployeeRole}`);
             });
@@ -192,8 +220,7 @@ function manageBuisness() {
             });
             //then
             manageBuisness();
-        }
-        else {
+        }else {
             //Stop program
             console.log('Edit Complete');
             process.exit(1);
