@@ -33,7 +33,7 @@ const questions = [
         type: 'list',
         name: 'doWhat',
         message: 'What would you like to do?',
-        choices: ['View all Departments', 'View all Roles', 'View all Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role', 'Update an Employee Manager', 'Finish'],
+        choices: ['View all Departments', 'View all Roles', 'View all Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role', 'Update an Employee Manager', 'Delete a Department', 'Delete a Role', 'Delete an Employee', 'Finish'],
     },
     {
         type: 'input',
@@ -132,6 +132,30 @@ const questions = [
             return answers.doWhat === 'Update an Employee Manager'
         },
     },
+    {
+        type: 'input',
+        name: 'deleteDepartment',
+        message: 'What is the ID of the Department being deleted',
+        when(answers) {
+            return answers.doWhat === 'Delete a Department'
+        },
+    },
+    {
+        type: 'input',
+        name: 'deleteRole',
+        message: 'What is the ID of the role being deleted',
+        when(answers) {
+            return answers.doWhat === 'Delete a Role'
+        },
+    },
+    {
+        type: 'input',
+        name: 'deleteEmployee',
+        message: 'What is the ID of the Employee being deleted',
+        when(answers) {
+            return answers.doWhat === 'Delete an Employee'
+        },
+    },
 ];
 
 function manageBuisness() {
@@ -208,7 +232,7 @@ function manageBuisness() {
             });
             //then
             manageBuisness();
-        }else if (answers.doWhat === 'Update an Employee Manager') {
+        } else if (answers.doWhat === 'Update an Employee Manager') {
             //something
             db.query(`UPDATE employee SET manager_id = '${answers.updateEmployeeManager}' WHERE id = '${answers.updateManagerofEmployeeID}'`, function (err, results) {
                 console.log('');
@@ -220,8 +244,37 @@ function manageBuisness() {
             });
             //then
             manageBuisness();
-        }//add delete options, need query(DESTROY) i think
-        else {
+        } else if (answers.doWhat === 'Delete a Department') {
+            db.query(`DELETE FROM department WHERE id = '${answers.deleteDepartment}'`, function (err, results) {
+                console.log('');
+                console.log('Deleteing a Department');
+            });
+            db.query('SELECT * FROM department', function (err, results) {
+                console.log('');
+                console.table(results);
+            });
+            manageBuisness();
+        } else if (answers.doWhat === 'Delete a Role') {
+            db.query(`DELETE FROM role WHERE id ='${answers.deleteRole}'`, function (err, results) {
+                console.log('');
+                console.log('Deleteing a Role');
+            });
+            db.query('SELECT role.id, role.title, role.salary, department.department_name FROM role JOIN department ON department.id = role.department_id', function (err, results) {
+                console.log('');
+                console.table(results);
+            });
+            manageBuisness();
+        } else if (answers.doWhat === 'Delete an Employee') {
+            db.query(`DELETE FROM employee WHERE id = '${answers.deleteEmployee}'`, function (err, results) {
+                console.log('');
+                console.log('Deleteing an Employee');
+            });
+            db.query('SELECT employee.Id, employee.first_name, employee.last_name, role.title, manager.first_name AS manager_first_name, manager.last_name AS manager_last_name FROM employee employee LEFT OUTER JOIN employee manager ON employee.manager_id = manager.id JOIN role ON role.id = employee.role_id', function (err, results) {
+                console.log('');
+                console.table(results);
+            });
+            manageBuisness();
+        } else {
             //Stop program
             console.log('Edit Complete');
             process.exit(1);
